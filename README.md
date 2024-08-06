@@ -1,7 +1,4 @@
 # Log Data Generation and Analysis
-
-This project involves generating a large dataset of log entries, aggregating the logs, and detecting anomalies using Python.
-
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)
@@ -178,6 +175,18 @@ for anomaly in anomalies:
     print(f"- {anomaly}")
 
 ```
+
+## Log Summary Report
+- Total Logs: 50000
+- INFO: 16914
+- WARN: 16664
+- ERROR: 16422
+- Total Unique Users: 100
+
+## Anomalies Detected
+
+- 2024-08-03T12:00:01Z: Spike in ERROR logs from 'auth' service
+
 
 
 
