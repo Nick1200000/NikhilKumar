@@ -97,7 +97,7 @@ def generate_logs(filename, num_logs):
 generate_logs('logs.json', NUM_LOGS)
 ```
 
-###Aggregating Log Data
+### Aggregating Log Data
 
 Run the following script to generate log data:
 
@@ -140,6 +140,46 @@ print(f"- Total Unique Users: {summary['total_unique_users']}")
 print(f"- Total Unique Orders: {summary['total_unique_orders']}")
 
 ```
+
+### Detecting Anomalies
+
+Run the following script to generate log data:
+
+```python
+import json
+from collections import defaultdict
+from datetime import datetime, timedelta
+
+def detect_anomalies(filename):
+    log_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    timestamp_format = "%Y-%m-%dT%H:%M:%SZ"
+    one_minute = timedelta(minutes=1)
+
+    # Read the log file and count logs
+    with open(filename, 'r') as f:
+        for line in f:
+            log = json.loads(line)
+            timestamp = datetime.strptime(log["timestamp"], timestamp_format)
+            minute = timestamp.replace(second=0, microsecond=0)
+            log_counts[minute][log["service"]][log["level"]] += 1
+
+    # Detect anomalies
+    anomalies = []
+    for minute, services in log_counts.items():
+        for service, levels in services.items():
+            if levels["ERROR"] > 10:  # Example threshold for anomalies
+                anomalies.append(f"{minute.isoformat()}Z: Spike in ERROR logs from '{service}' service")
+
+    return anomalies
+
+anomalies = detect_anomalies('logs.json')
+print("Anomalies Detected:")
+for anomaly in anomalies:
+    print(f"- {anomaly}")
+
+```
+
+
 
 
 
