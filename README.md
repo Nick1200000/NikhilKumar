@@ -96,3 +96,57 @@ def generate_logs(filename, num_logs):
 
 generate_logs('logs.json', NUM_LOGS)
 ```
+
+###Aggregating Log Data
+
+Run the following script to generate log data:
+
+```python
+import json
+from collections import defaultdict
+from datetime import datetime
+
+def aggregate_logs(filename):
+    log_summary = {
+        "total_logs": 0,
+        "levels": defaultdict(int),
+        "unique_users": set(),
+        "unique_orders": set()
+    }
+
+    with open(filename, 'r') as f:
+        for line in f:
+            log = json.loads(line)
+            log_summary["total_logs"] += 1
+            log_summary["levels"][log["level"]] += 1
+
+            context = json.loads(log["context"])
+            if "user_id" in context:
+                log_summary["unique_users"].add(context["user_id"])
+            if "order_id" in context:
+                log_summary["unique_orders"].add(context["order_id"])
+
+    log_summary["total_unique_users"] = len(log_summary["unique_users"])
+    log_summary["total_unique_orders"] = len(log_summary["unique_orders"])
+    return log_summary
+
+summary = aggregate_logs('logs.json')
+print("Log Summary Report:")
+print(f"- Total Logs: {summary['total_logs']}")
+print(f"- INFO: {summary['levels']['INFO']}")
+print(f"- WARN: {summary['levels']['WARN']}")
+print(f"- ERROR: {summary['levels']['ERROR']}")
+print(f"- Total Unique Users: {summary['total_unique_users']}")
+print(f"- Total Unique Orders: {summary['total_unique_orders']}")
+
+```
+
+
+
+
+
+
+
+
+
+
